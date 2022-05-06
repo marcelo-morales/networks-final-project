@@ -107,6 +107,8 @@ class Client:
                     #-------------
                     # Statistics about the session are printed here
                     # ...
+					print("rtp packet loss rate " + rtpPacket)
+					print("video data rate in bits per second " + )
 										
 					if currFrameNbr > self.frameNbr: # Discard the late packet
 						self.frameNbr = currFrameNbr
