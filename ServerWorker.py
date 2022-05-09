@@ -48,6 +48,8 @@ class ServerWorker:
 		
 		# Get the RTSP sequence number 
 		seq = request[1].split(' ')
+
+		print("this is seq " + str(seq))
 		
 		# Process SETUP request
 		if requestType == self.SETUP:

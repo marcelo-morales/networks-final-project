@@ -107,8 +107,13 @@ class Client:
                     #-------------
                     # Statistics about the session are printed here
                     # ...
-					print("rtp packet loss rate " + rtpPacket)
-					print("video data rate in bits per second " + )
+
+					#if there are any gaps in the sequnce numbers, this means we have lost a packet
+
+					#print("rtp packet loss rate " + rtpPacket.)
+
+
+					#print("video data rate in bits per second " + )
 										
 					if currFrameNbr > self.frameNbr: # Discard the late packet
 						self.frameNbr = currFrameNbr
@@ -159,12 +164,12 @@ class Client:
 			threading.Thread(target=self.recvRtspReply).start()
 			# Update RTSP sequence number.
 			# ...
-			self.rtspSeq += 1
+			self.rtspSeq = 1
 
 			
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "SETUP " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Transport: RTP/UDP; " + "client_port= " + self.rtpPort
+			request = "SETUP " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Transport: RTP/UDP; " + "client_port= " + str(self.rtpPort)
 			
 			# Keep track of the sent request.
 			# self.requestSent = ...
@@ -178,7 +183,7 @@ class Client:
 			
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "PLAY " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Session: " + self.sessionId
+			request = "PLAY " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
 
 			
 			# Keep track of the sent request.
@@ -193,7 +198,7 @@ class Client:
 			
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "PAUSE " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Session: " + self.sessionId
+			request = "PAUSE " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
 
 			
 			# Keep track of the sent request.
@@ -208,7 +213,7 @@ class Client:
 			
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "TEARDOWN " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Session: " + self.sessionId
+			request = "TEARDOWN " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
 
 			
 			# Keep track of the sent request.
@@ -218,7 +223,7 @@ class Client:
 			return
 		
 		# Send the RTSP request using rtspSocket.
-		self.rtspSocket.send(request)
+		self.rtspSocket.send(request.encode())
 
 		
 		print('\nData sent:\n' + request)
