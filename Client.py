@@ -1,3 +1,4 @@
+
 from tkinter import *
 import tkinter.messagebox
 from PIL import Image, ImageTk
@@ -151,7 +152,7 @@ class Client:
 		try:
 			self.rtspSocket.connect((self.serverAddr, self.serverPort))
 		except:
-			tkMessageBox.showwarning('Connection Failed', 'Connection to \'%s\' failed.' %self.serverAddr)
+			tkinter.messagebox.showwarning('Connection Failed', 'Connection to \'%s\' failed.' %self.serverAddr)
 	
 	def sendRtspRequest(self, requestCode):
 		"""Send RTSP request to the server."""	
@@ -169,7 +170,7 @@ class Client:
 			
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "SETUP " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Transport: RTP/UDP; " + "client_port= " + str(self.rtpPort)
+			request = "SETUP " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq: " + str(self.rtspSeq) + "\n" +  "Transport: RTP/UDP; " + "client_port= " + str(self.rtpPort)
 			
 			# Keep track of the sent request.
 			# self.requestSent = ...
@@ -183,7 +184,7 @@ class Client:
 			
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "PLAY " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
+			request = "PLAY " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq: " + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
 
 			
 			# Keep track of the sent request.
@@ -198,7 +199,7 @@ class Client:
 			
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "PAUSE " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
+			request = "PAUSE " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq: " + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
 
 			
 			# Keep track of the sent request.
@@ -213,7 +214,7 @@ class Client:
 			
 			# Write the RTSP request to be sent.
 			# request = ...
-			request = "TEARDOWN " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq:" + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
+			request = "TEARDOWN " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq: " + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
 
 			
 			# Keep track of the sent request.
@@ -303,14 +304,14 @@ class Client:
 		try:
 			# Bind the socket to the address using the RTP port given by the client user
 			# ...
-			self.rtpSocket.bind(('127.0.0.1', self.rtpPort))
+			self.rtpSocket.bind((self.serverAddr, self.rtpPort))
 		except:
-			tkMessageBox.showwarning('Unable to Bind', 'Unable to bind PORT=%d' %self.rtpPort)
+			tkinter.messagebox.showwarning('Unable to Bind', 'Unable to bind PORT=%d' %self.rtpPort)
 
 	def handler(self):
 		"""Handler on explicitly closing the GUI window."""
 		self.pauseMovie()
-		if tkMessageBox.askokcancel("Quit?", "Are you sure you want to quit?"):
+		if tkinter.messagebox.askokcancel("Quit?", "Are you sure you want to quit?"):
 			self.exitClient()
 		else: # When the user presses cancel, resume playing.
 			self.playMovie()
