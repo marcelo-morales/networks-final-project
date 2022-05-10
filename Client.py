@@ -299,14 +299,16 @@ class Client:
 		
 		# Set the timeout value of the socket to 0.5sec
 		# ...
-		self.rtpSocket.settimeout(0.5)
+		
 		
 		try:
 			# Bind the socket to the address using the RTP port given by the client user
 			# ...
-			self.rtpSocket.bind((self.serverAddr, self.rtpPort))
+			self.rtpSocket.bind(("127.0.0.1", self.rtpPort))
 		except:
 			tkinter.messagebox.showwarning('Unable to Bind', 'Unable to bind PORT=%d' %self.rtpPort)
+
+		self.rtpSocket.settimeout(0.5)
 
 	def handler(self):
 		"""Handler on explicitly closing the GUI window."""
