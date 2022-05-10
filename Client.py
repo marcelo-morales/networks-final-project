@@ -3,7 +3,7 @@ from tkinter import *
 import tkinter.messagebox
 from PIL import Image, ImageTk
 import socket, threading, sys, traceback, os
-
+import time
 from RtpPacket import RtpPacket
 
 CACHE_FILE_NAME = "cache-"
@@ -93,6 +93,10 @@ class Client:
 	
 	def listenRtp(self):		
 		"""Listen for RTP packets."""
+		packetCount = 0
+		loss = 0
+		start = time.time()
+		cumDataSize = 0
 		while True:
 			try:
 				data = self.rtpSocket.recv(20480)
@@ -100,25 +104,25 @@ class Client:
 					rtpPacket = RtpPacket()
 					rtpPacket.decode(data)
 					
+					currTime = time.time()
 					currFrameNbr = rtpPacket.seqNum()
 					print("Current Seq Num: " + str(currFrameNbr))
-
+					packetCount += 1
                     #-------------
                     # TO COMPLETE
                     #-------------
                     # Statistics about the session are printed here
-                    # ...
-
-					#if there are any gaps in the sequnce numbers, this means we have lost a packet
-
-					#print("rtp packet loss rate " + rtpPacket.)
-
-
-					#print("video data rate in bits per second " + )
 										
 					if currFrameNbr > self.frameNbr: # Discard the late packet
+						loss += currFrameNbr - self.frameNbr - 1
 						self.frameNbr = currFrameNbr
 						self.updateMovie(self.writeFrame(rtpPacket.getPayload()))
+					
+					cumDataSize += sys.getsizeof(rtpPacket.getPayload())
+					timeDiff = currTime - start
+					print("rtp packet loss rate " + str(loss/packetCount))
+					print("video data in bytes per second: " + str(cumDataSize/timeDiff))
+
 			except:
 				# Stop listening upon requesting PAUSE or TEARDOWN
 				if self.playEvent.isSet(): 
