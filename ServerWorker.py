@@ -58,7 +58,9 @@ class ServerWorker:
 				print("processing SETUP\n")
 				
 				try:
+					print("before opening video")
 					self.clientInfo['videoStream'] = VideoStream(filename)
+					print("this is video " + str(self.clientInfo['videoStream']))
 					self.state = self.READY
 				except IOError:
 					self.replyRtsp(self.FILE_NOT_FOUND_404, seq[1])
@@ -67,7 +69,7 @@ class ServerWorker:
 				self.clientInfo['session'] = randint(100000, 999999)
 				
 				# Send RTSP reply
-				self.replyRtsp(self.OK_200, seq[1]) #I CHANGED THIS TO ZERO
+				self.replyRtsp(self.OK_200, seq[1]) 
 				
 				# Get the RTP/UDP port from the last line
 				self.clientInfo['rtpPort'] = request[2].split(' ')[3]
@@ -87,6 +89,8 @@ class ServerWorker:
 				self.clientInfo['event'] = threading.Event()
 				self.clientInfo['worker']= threading.Thread(target=self.sendRtp) 
 				self.clientInfo['worker'].start()
+
+				print("this is ending")
 		
 		# Process PAUSE request
 		elif requestType == self.PAUSE:
@@ -117,19 +121,25 @@ class ServerWorker:
 			# Stop sending if request is PAUSE or TEARDOWN
 			if self.clientInfo['event'].isSet(): 
 				break 
+
+			print("this is video stream " + str(self.clientInfo['videoStream']))
 				
 			data = self.clientInfo['videoStream'].nextFrame()
+			print("this is my data " + str(data) + " end")
 			if data: 
 				frameNumber = self.clientInfo['videoStream'].frameNbr()
 				try:
 					address = self.clientInfo['rtspSocket'][1][0]
 					port = int(self.clientInfo['rtpPort'])
 					self.clientInfo['rtpSocket'].sendto(self.makeRtp(data, frameNumber),(address,port))
+					print("this is my rtp " + str(self.makeRtp(data, frameNumber),(address,port)))
 				except:
 					print("Connection Error")
 					#print('-'*60)
 					#traceback.print_exc(file=sys.stdout)
 					#print('-'*60)
+
+			
 
 	def makeRtp(self, payload, frameNbr):
 		"""RTP-packetize the video data."""
@@ -145,6 +155,7 @@ class ServerWorker:
 		rtpPacket = RtpPacket()
 		
 		rtpPacket.encode(version, padding, extension, cc, seqnum, marker, pt, ssrc, payload)
+
 		
 		return rtpPacket.getPacket()
 		

@@ -186,10 +186,13 @@ class Client:
 			# request = ...
 			request = "PLAY " + self.fileName + " RTSP/1.0 " + "\n" + "CSeq: " + str(self.rtspSeq) + "\n" +  "Session: " + str(self.sessionId)
 
+
 			
 			# Keep track of the sent request.
 			# self.requestSent = ...
-			self.requestCode = self.PLAY
+			self.requestSent = self.PLAY
+			#self.requestCode = self.PLAY
+
 		
 		# Pause request
 		elif requestCode == self.PAUSE and self.state == self.PLAYING:
@@ -204,7 +207,7 @@ class Client:
 			
 			# Keep track of the sent request.
 			# self.requestSent = ...
-			self.rtspSeq = self.PAUSE
+			self.requestSent = self.PAUSE
 			
 		# Teardown request
 		elif requestCode == self.TEARDOWN and not self.state == self.INIT:
@@ -219,7 +222,7 @@ class Client:
 			
 			# Keep track of the sent request.
 			# self.requestSent = ...
-			self.rtspSeq = self.TEARDOWN
+			self.requestSent = self.TEARDOWN
 		else:
 			return
 		
@@ -296,19 +299,25 @@ class Client:
 		# Create a new datagram socket to receive RTP packets from the server
 		# self.rtpSocket = ...
 		self.rtpSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+		print("this is socket " + str(self.rtpSocket))
 		
+		print("this is rtp port " + str(self.rtpPort))
+
 		# Set the timeout value of the socket to 0.5sec
 		# ...
-		
+		self.rtpSocket.settimeout(0.5)
+
 		
 		try:
 			# Bind the socket to the address using the RTP port given by the client user
 			# ...
-			self.rtpSocket.bind(("127.0.0.1", self.rtpPort))
-		except:
+			self.rtpSocket.bind((self.serverAddr, self.rtpPort))
+		except Exception as e:
+			print(str(e))
 			tkinter.messagebox.showwarning('Unable to Bind', 'Unable to bind PORT=%d' %self.rtpPort)
 
-		self.rtpSocket.settimeout(0.5)
+		#self.rtpSocket.settimeout(0.5)
 
 	def handler(self):
 		"""Handler on explicitly closing the GUI window."""

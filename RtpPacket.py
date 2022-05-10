@@ -16,6 +16,8 @@ class RtpPacket:
 		# TO COMPLETE
 		#--------------
 		# Fill the header bytearray with RTP header fields
+
+		print("i am encoding")
 		
 
 		header[0]  = version << 6
