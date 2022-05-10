@@ -304,9 +304,6 @@ class Client:
 		# self.rtpSocket = ...
 		self.rtpSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-		print("this is socket " + str(self.rtpSocket))
-		
-		print("this is rtp port " + str(self.rtpPort))
 
 		# Set the timeout value of the socket to 0.5sec
 		# ...

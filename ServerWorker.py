@@ -49,7 +49,6 @@ class ServerWorker:
 		# Get the RTSP sequence number 
 		seq = request[1].split(' ')
 
-		print("this is seq " + str(seq))
 		
 		# Process SETUP request
 		if requestType == self.SETUP:
@@ -58,9 +57,7 @@ class ServerWorker:
 				print("processing SETUP\n")
 				
 				try:
-					print("before opening video")
 					self.clientInfo['videoStream'] = VideoStream(filename)
-					print("this is video " + str(self.clientInfo['videoStream']))
 					self.state = self.READY
 				except IOError:
 					self.replyRtsp(self.FILE_NOT_FOUND_404, seq[1])
@@ -89,8 +86,6 @@ class ServerWorker:
 				self.clientInfo['event'] = threading.Event()
 				self.clientInfo['worker']= threading.Thread(target=self.sendRtp) 
 				self.clientInfo['worker'].start()
-
-				print("this is ending")
 		
 		# Process PAUSE request
 		elif requestType == self.PAUSE:
@@ -122,17 +117,14 @@ class ServerWorker:
 			if self.clientInfo['event'].isSet(): 
 				break 
 
-			print("this is video stream " + str(self.clientInfo['videoStream']))
 				
 			data = self.clientInfo['videoStream'].nextFrame()
-			print("this is my data " + str(data) + " end")
 			if data: 
 				frameNumber = self.clientInfo['videoStream'].frameNbr()
 				try:
 					address = self.clientInfo['rtspSocket'][1][0]
 					port = int(self.clientInfo['rtpPort'])
 					self.clientInfo['rtpSocket'].sendto(self.makeRtp(data, frameNumber),(address,port))
-					print("this is my rtp " + str(self.makeRtp(data, frameNumber),(address,port)))
 				except:
 					print("Connection Error")
 					#print('-'*60)
